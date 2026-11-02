@@ -2,6 +2,30 @@
   box-sizing: border-box;
 }
 
+/* Thin custom scrollbars */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 999px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--color-control-border);
+}
+
 body {
   margin: 0;
   background: var(--color-bg);
@@ -96,6 +120,7 @@ h2 {
   border: 1px solid var(--color-border);
   border-radius: 12px;
   background: var(--color-surface);
+  box-shadow: 0 1px 3px rgb(0 0 0 / 2%);
 }
 
 .field {
@@ -115,16 +140,25 @@ label {
 select,
 input,
 textarea {
-  padding: 6px 8px;
+  padding: 7px 10px;
   border: 1px solid var(--color-control-border);
   border-radius: 6px;
   background: var(--color-bg);
   color: var(--color-text);
   font: inherit;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 select {
-  max-width: 240px;
+  max-width: 260px;
+}
+
+select:hover:not(:disabled),
+input:hover:not(:disabled),
+textarea:hover:not(:disabled) {
+  border-color: var(--color-accent);
 }
 
 textarea {
@@ -153,6 +187,14 @@ button {
   color: var(--color-on-accent);
   font: inherit;
   cursor: pointer;
+  transition:
+    opacity 0.15s ease,
+    background-color 0.15s ease,
+    transform 0.05s ease;
+}
+
+button:not(:disabled):active {
+  transform: scale(0.98);
 }
 
 button:disabled {
@@ -223,15 +265,27 @@ button:disabled {
 }
 
 button.secondary {
-  padding: 3px 12px;
+  padding: 4px 12px;
   border: 1px solid var(--color-control-border);
+  border-radius: 6px;
   background: transparent;
   color: var(--color-text);
   font-size: 13px;
+  transition: all 0.15s ease;
+}
+
+button.secondary:hover:not(:disabled) {
+  border-color: var(--color-accent);
+  background: var(--color-surface);
 }
 
 button.secondary.danger {
   color: var(--color-danger);
+}
+
+button.secondary.danger:hover:not(:disabled) {
+  border-color: var(--color-danger);
+  background: var(--color-notice-bg);
 }
 
 /* A button that is only an icon; its name is in its label. */
@@ -242,13 +296,16 @@ button.icon-button {
   height: 30px;
   padding: 0;
   border: 1px solid transparent;
+  border-radius: 6px;
   background: transparent;
   color: var(--color-muted);
+  transition: all 0.15s ease;
 }
 
 button.icon-button:hover:not(:disabled) {
   background: var(--color-surface);
   color: var(--color-text);
+  border-color: var(--color-border);
 }
 
 button.icon-button:disabled {
@@ -277,6 +334,7 @@ button.icon-button:disabled {
   border-radius: 10px;
   background: var(--color-bg);
   box-shadow: 0 8px 24px rgb(0 0 0 / 12%);
+  animation: popupFade 0.12s ease-out;
 }
 
 button.menu-item {
@@ -287,6 +345,7 @@ button.menu-item {
   font-size: 13px;
   text-align: start;
   white-space: nowrap;
+  transition: background-color 0.12s ease;
 }
 
 button.menu-item:hover:not(:disabled) {
@@ -307,6 +366,12 @@ button.menu-item.danger {
   background: transparent;
   color: var(--color-accent);
   font-weight: 600;
+  transition: all 0.15s ease;
+}
+
+.add:hover:not(:disabled) {
+  border-color: var(--color-accent);
+  background: var(--color-tint);
 }
 
 .add::before {
@@ -322,10 +387,18 @@ button.menu-item.danger {
 }
 
 .item {
-  padding: 12px 12px 12px 16px;
+  padding: 12px 14px 12px 16px;
   border: 1px solid var(--color-border);
   border-radius: 12px;
   background: var(--color-bg);
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.item:hover {
+  border-color: var(--color-control-border);
+  box-shadow: 0 2px 8px rgb(0 0 0 / 4%);
 }
 
 /* The name and details at the start, the actions at the end. */
@@ -539,4 +612,14 @@ button.chip {
 
 .import-preview p {
   margin: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
