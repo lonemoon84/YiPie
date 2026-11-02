@@ -2,6 +2,30 @@
   box-sizing: border-box;
 }
 
+/* Thin custom scrollbars */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-control-border) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--color-control-border);
+  border-radius: 999px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--color-muted);
+}
+
 html,
 body,
 #root {
@@ -78,7 +102,7 @@ body {
   min-width: 0;
   max-width: 34%;
   height: 28px;
-  padding: 0 6px 0 10px;
+  padding: 0 8px 0 10px;
   border: 1px solid var(--color-control-border);
   border-radius: 999px;
   background: var(--color-surface);
@@ -86,6 +110,14 @@ body {
   font: inherit;
   font-size: 12px;
   text-overflow: ellipsis;
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease;
+  cursor: pointer;
+}
+
+.menu:hover {
+  border-color: var(--color-accent);
 }
 
 /*
@@ -148,6 +180,14 @@ button {
   font: inherit;
   font-size: 13px;
   cursor: pointer;
+  transition:
+    opacity 0.15s ease,
+    background-color 0.15s ease,
+    transform 0.05s ease;
+}
+
+button:not(:disabled):active {
+  transform: scale(0.98);
 }
 
 button:disabled {
@@ -160,6 +200,16 @@ button.quiet {
   background: transparent;
   color: var(--color-muted);
   font-size: 12px;
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease,
+    color 0.15s ease;
+}
+
+button.quiet:hover:not(:disabled) {
+  border-color: var(--color-accent);
+  color: var(--color-text);
+  background: var(--color-surface);
 }
 
 /* A button that is only an icon; its name is in its label. */
@@ -173,15 +223,20 @@ button.icon-button {
   border: 1px solid transparent;
   background: transparent;
   color: var(--color-muted);
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease,
+    color 0.15s ease;
 }
 
 button.icon-button.outlined {
   border-color: var(--color-control-border);
 }
 
-button.icon-button:hover {
+button.icon-button:hover:not(:disabled) {
   background: var(--color-surface);
   color: var(--color-text);
+  border-color: var(--color-accent);
 }
 
 button.icon-button[data-result='copied'] {
@@ -215,6 +270,18 @@ button:focus-visible {
   border-radius: 10px;
   background: var(--color-bg);
   box-shadow: 0 8px 24px rgb(0 0 0 / 14%);
+  animation: popupFade 0.12s ease-out;
+}
+
+@keyframes popupFade {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 .more-items button.quiet {
@@ -269,11 +336,14 @@ button:focus-visible {
   width: fit-content;
   max-width: 88%;
   margin: 0 0 10px auto;
-  padding: 7px 12px;
-  border-radius: 12px 12px 4px 12px;
+  padding: 8px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 14px 14px 4px 14px;
   background: var(--color-surface);
+  color: var(--color-text);
   overflow-wrap: anywhere;
   white-space: pre-wrap;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 4%);
 }
 
 .meta {
@@ -281,7 +351,7 @@ button:focus-visible {
   flex-wrap: wrap;
   align-items: center;
   gap: 8px;
-  margin-top: 2px;
+  margin-top: 4px;
   color: var(--color-muted);
   font-size: 11px;
 }
@@ -303,8 +373,23 @@ button:focus-visible {
 .placeholder span {
   height: 12px;
   border-radius: 6px;
-  background: var(--color-surface);
-  animation: pulse 1.2s ease-in-out infinite;
+  background: linear-gradient(
+    90deg,
+    var(--color-surface) 0%,
+    var(--color-tint) 50%,
+    var(--color-surface) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.8s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
 }
 
 .placeholder span:nth-child(1) {
@@ -326,9 +411,9 @@ button:focus-visible {
   display: flex;
   flex-wrap: wrap;
   align-items: flex-end;
-  gap: 4px 8px;
+  gap: 6px 8px;
   margin: 0 -18px;
-  padding: 10px 12px 8px;
+  padding: 10px 14px 10px;
   border-top: 1px solid var(--color-border);
   background: var(--color-bg);
 }
@@ -336,9 +421,9 @@ button:focus-visible {
 .ask textarea {
   flex: 1;
   min-width: 0;
-  min-height: 36px;
+  min-height: 38px;
   max-height: 30vh;
-  padding: 7px 12px;
+  padding: 8px 12px;
   border: 1px solid var(--color-control-border);
   border-radius: 10px;
   background: var(--color-bg);
@@ -347,6 +432,9 @@ button:focus-visible {
   font-size: 13px;
   line-height: 1.5;
   resize: vertical;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 .ask textarea:focus-visible {
@@ -355,9 +443,10 @@ button:focus-visible {
 }
 
 .ask button {
-  height: 36px;
-  padding: 0 14px;
+  height: 38px;
+  padding: 0 16px;
   border-radius: 10px;
+  font-weight: 500;
 }
 
 /* Nothing to send: an outline, not a faded blue that looks broken. */
@@ -375,27 +464,56 @@ button:focus-visible {
   overflow: hidden;
   color: var(--color-muted);
   font-size: 11px;
+  transition:
+    height 0.15s ease,
+    opacity 0.15s ease;
+  opacity: 0;
 }
 
 .ask:focus-within .ask-hint {
   height: auto;
+  opacity: 1;
 }
 
 /* The model's reasoning, folded above its answer. */
 .reasoning {
-  margin: 0 0 10px;
+  margin: 0 0 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-surface);
   color: var(--color-muted);
   font-size: 12px;
+  overflow: hidden;
+  transition: border-color 0.15s ease;
+}
+
+.reasoning:hover {
+  border-color: var(--color-control-border);
 }
 
 .reasoning summary {
+  padding: 6px 10px;
   cursor: pointer;
+  font-weight: 500;
+  user-select: none;
+  transition: background-color 0.15s ease;
+}
+
+.reasoning summary:hover {
+  background: var(--color-tint);
+  color: var(--color-text);
+}
+
+.reasoning[open] summary {
+  border-bottom: 1px dashed var(--color-border);
 }
 
 .reasoning p {
-  margin: 6px 0 0;
-  padding-left: 10px;
-  border-left: 2px solid var(--color-border);
+  margin: 0;
+  padding: 8px 10px;
+  border-left: 0;
+  line-height: 1.6;
+  background: var(--color-bg);
   white-space: pre-wrap;
   overflow-wrap: anywhere;
 }
@@ -467,13 +585,16 @@ button:focus-visible {
  * reads first. A quote further down stays a plain quote.
  */
 .answer > blockquote:first-child {
-  margin-bottom: 1em;
-  padding: 10px 14px;
-  border-left-color: var(--color-accent);
+  margin-bottom: 1.1em;
+  padding: 12px 14px;
+  border-left: 3.5px solid var(--color-accent);
   border-radius: 8px;
   background: var(--color-tint);
   color: var(--color-text);
   font-size: 1.04em;
+  font-weight: 450;
+  line-height: 1.65;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 4%);
 }
 
 .answer > blockquote:first-child > :last-child {
@@ -538,18 +659,23 @@ button:focus-visible {
   display: inline-flex;
   align-items: center;
   gap: 2px;
-  min-width: 26px;
+  min-width: 24px;
   height: 20px;
-  margin: 0 0.2em;
+  margin: 0 0.25em;
   padding: 0 6px;
   border: 1px solid var(--color-control-border);
   border-radius: 6px;
-  background: var(--color-bg);
+  background: var(--color-surface);
   color: var(--color-accent);
   font-size: 11px;
+  font-weight: 500;
   line-height: 1;
-  vertical-align: 0.1em;
+  vertical-align: 0.12em;
   white-space: nowrap;
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease,
+    color 0.15s ease;
 }
 
 .answer .cite::before {
@@ -558,7 +684,8 @@ button:focus-visible {
 
 .answer .cite:hover {
   border-color: var(--color-accent);
-  background: var(--color-tint);
+  background: var(--color-accent);
+  color: var(--color-on-accent);
 }
 
 /* The passage of the quote marker under the pointer or in focus. */
@@ -574,6 +701,16 @@ button:focus-visible {
   line-height: 1.55;
   box-shadow: 0 8px 24px rgb(0 0 0 / 20%);
   pointer-events: none;
+  animation: fadeIn 0.12s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .quote-preview[data-above='true'] {
@@ -597,4 +734,14 @@ button:focus-visible {
   display: block;
   margin-top: 6px;
   font-size: 11px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

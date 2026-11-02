@@ -94,9 +94,13 @@ export const SHELL_CSS = `
   font-size: 18px;
   line-height: 1;
   cursor: pointer;
+  transition: background-color 0.15s ease;
 }
 .close:hover {
-  background: rgba(0, 0, 0, 0.06);
+  background: rgba(0, 0, 0, 0.08);
+}
+.close:active {
+  background: rgba(0, 0, 0, 0.12);
 }
 .close:focus-visible {
   outline: 2px solid #2b6ad6;
