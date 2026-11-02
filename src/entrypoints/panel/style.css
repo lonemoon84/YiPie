@@ -5,7 +5,7 @@
 /* Thin custom scrollbars */
 * {
   scrollbar-width: thin;
-  scrollbar-color: var(--color-border) transparent;
+  scrollbar-color: var(--color-control-border) transparent;
 }
 
 *::-webkit-scrollbar {
@@ -18,12 +18,12 @@
 }
 
 *::-webkit-scrollbar-thumb {
-  background: var(--color-border);
+  background: var(--color-control-border);
   border-radius: 999px;
 }
 
 *::-webkit-scrollbar-thumb:hover {
-  background: var(--color-control-border);
+  background: var(--color-muted);
 }
 
 html,
@@ -227,7 +227,7 @@ button.icon-button.outlined {
   border-color: var(--color-control-border);
 }
 
-button.icon-button:hover {
+button.icon-button:hover:not(:disabled) {
   background: var(--color-surface);
   color: var(--color-text);
   border-color: var(--color-accent);
@@ -432,9 +432,8 @@ button:focus-visible {
 }
 
 .ask textarea:focus-visible {
-  border-color: var(--color-accent);
-  outline: none;
-  box-shadow: 0 0 0 2px var(--color-tint);
+  outline: 2px solid var(--color-accent);
+  outline-offset: 1px;
 }
 
 .ask button {
@@ -693,7 +692,16 @@ button:focus-visible {
   line-height: 1.55;
   box-shadow: 0 8px 24px rgb(0 0 0 / 20%);
   pointer-events: none;
-  animation: popupFade 0.12s ease-out;
+  animation: fadeIn 0.12s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .quote-preview[data-above='true'] {
