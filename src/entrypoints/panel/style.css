@@ -200,7 +200,10 @@ button.quiet {
   background: transparent;
   color: var(--color-muted);
   font-size: 12px;
-  transition: all 0.15s ease;
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease,
+    color 0.15s ease;
 }
 
 button.quiet:hover:not(:disabled) {
@@ -220,7 +223,10 @@ button.icon-button {
   border: 1px solid transparent;
   background: transparent;
   color: var(--color-muted);
-  transition: all 0.15s ease;
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease,
+    color 0.15s ease;
 }
 
 button.icon-button.outlined {
@@ -666,7 +672,10 @@ button:focus-visible {
   line-height: 1;
   vertical-align: 0.12em;
   white-space: nowrap;
-  transition: all 0.15s ease;
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease,
+    color 0.15s ease;
 }
 
 .answer .cite::before {
