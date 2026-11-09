@@ -147,7 +147,7 @@ GitHub Release 附件与 Chrome 应用商店，两处是同一个 zip（计划 �
 5. `npm run zip`。
 6. `npm run verify:release`：zip 与 `.output/chrome-mv3` 的 manifest 版本都等于 `package.json`；权限与 `_locales` 符合附录 C；没有 source map、`.env*`、测试残留与 E2E 钩子；zip 里的文件与构建目录逐个相同。
 7. 附录 H 的手工冒烟清单，Chrome 与 Edge 各一次（用户执行）；另从零克隆 → `npm ci` → `npm run build` → 在干净的 Chrome 里加载 → 一次真实总结。
-8. 提交（`chore(release): v<版本>`）、打 tag `v<版本>`、推送，然后 `gh release create v<版本> .output/yipie-<版本>-chrome.zip --title v<版本> --notes-file <该版本的 CHANGELOG 段落>`。发 Release 由用户决定，Claude 不自行发布。
+8. 提交（`chore(release): v<版本>`）并把 Release 说明放进 `docs/releases/v<版本>.md`，随版本 PR 一起合并。main 上这个提交的 quality 跑绿后，手动触发 `release` 工作流（`.github/workflows/release.yml`，输入版本号，不带 `v`）：它检查版本号与说明文件、确认 quality 已通过，重新打包并跑 `verify:release`，再打 tag `v<版本>`、建 Release 并附上 zip。用户已同意由 Claude 触发这个工作流发 Release（2026-11-09）；上传商店仍由用户做，用 Release 上的那个 zip。
    - Release 说明按计划**附录 I** 的骨架写，不要把 CHANGELOG 段落直接贴上去：标题 `## YiPie v<版本> · 一瞥 v<版本>`、发布日期、中英各一句摘要，然后英文 `### What's new` / `### Verification / 验证` / `### Install`，`---` 之后是逐条对应的中文 `### 本版本更新内容` / `### Verification / 验证` / `### 安装`。链接用仓库绝对地址，安装包名照附件写（`yipie-<版本>-chrome.zip`，不带 `v`），最低浏览器版本等按这个版本的真实情况写。
    - 事后修正用 `gh release edit <tag> --notes-file <文件>`，只换正文，不动 tag、附件与 Latest 标记。
 9. Chrome 应用商店：用户在开发者后台上传同一个 zip、提交审核。商店文案、权限理由、截图与宣传图在项目文件 `store/`；界面有变化时重拍截图（`store/tools/` 里有截图用的 Playwright 脚本，临时放进 `e2e/` 跑完再移走）。隐私政策链接指向仓库里的 `PRIVACY.md`，数据处理方式变了要同步改它和商店后台的「隐私权」表单。

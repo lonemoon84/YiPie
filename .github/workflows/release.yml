@@ -1,0 +1,75 @@
+# Publishes a GitHub Release (AGENTS.md「发版」step 8), started by hand from
+# the Actions tab or the API once the version-bump PR is merged and the
+# quality run on that commit is green. It tags the commit it runs on, builds
+# and checks the package again, and attaches the same zip that goes to the
+# Chrome Web Store. The release notes come from docs/releases/v<version>.md.
+name: release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version without the leading v, e.g. 0.1.6; must equal package.json'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    # Same runner as quality.yml.
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      VERSION: ${{ inputs.version }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Check version, notes, tag and quality run
+        run: |
+          set -euo pipefail
+          [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "::error::bad version '$VERSION'"; exit 1; }
+          pkg=$(node -p "require('./package.json').version")
+          [ "$pkg" = "$VERSION" ] || { echo "::error::package.json is $pkg, not $VERSION"; exit 1; }
+          [ -s "docs/releases/v$VERSION.md" ] || { echo "::error::docs/releases/v$VERSION.md is missing"; exit 1; }
+          if gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/v$VERSION" >/dev/null 2>&1; then
+            echo "::error::tag v$VERSION already exists"; exit 1
+          fi
+          ok=$(gh run list --repo "$GITHUB_REPOSITORY" --workflow quality.yml --commit "$GITHUB_SHA" \
+            --status success --json databaseId --jq 'length')
+          [ "$ok" -gt 0 ] || { echo "::error::no successful quality run on $GITHUB_SHA yet"; exit 1; }
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Gate and checks
+        run: npm run gate && npm run build && npm run check:manifest && npm run check:bundle
+
+      - name: Package
+        run: rm -f .output/*-chrome.zip && npm run zip && npm run verify:release
+
+      - name: Create the release
+        run: |
+          gh release create "v$VERSION" ".output/yipie-$VERSION-chrome.zip" \
+            --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" \
+            --title "v$VERSION" --notes-file "docs/releases/v$VERSION.md"
+
+      - name: Keep the zip with the run
+        uses: actions/upload-artifact@v6
+        with:
+          name: yipie-${{ inputs.version }}-chrome
+          path: .output/yipie-${{ inputs.version }}-chrome.zip
+          include-hidden-files: true
+          if-no-files-found: error
